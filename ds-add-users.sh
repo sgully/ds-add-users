@@ -6,5 +6,13 @@ _HOST_USER_NAME=testinguser
 _HOST_USER_PASSWORD=newpassword
 _HOST_USER_SHORTNAME=testinguser
 
-_DS_USERS="({\"dstudio-user-admin-status\" = YES; \"dstudio-user-name\" = ${_HOST_USER_NAME}; \"dstudio-user-password\" = \"${_HOST_USER_PASSWORD}\"; \"dstudio-user-shortname\" = ${_HOST_USER_SHORTNAME};})"
+_DS_USERS=`cat <<EOF
+{
+ "dstudio-users-admin-status" = YES;
+ "dstudio-users-name" = ${_HOST_USER_NAME};
+ "dstudio-user-password" = "${_HOST_USER_PASSWORD}";
+ "dstudio-user-shortname" = ${_HOST_USER_SHORTNAME};
+}
+EOF`
+
 echo defaults write ${_DB_BYHOST}/${_HOST_MAC} dstudio-users "${_DS_USERS}"
