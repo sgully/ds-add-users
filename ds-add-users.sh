@@ -1,18 +1,49 @@
 #!/bin/sh
 
+if test $# -lt 1 ; then
+    echo "usage: `basename $0` file ..."
+    exit 1
+fi
+
+_CSV_FILES="$*"
 _DB_BYHOST="/Volumes/Server_HD_2/Databases/ByHost"
-_HOST_MAC=70cd608d64b2
-_HOST_USER_NAME=testinguser
-_HOST_USER_PASSWORD=newpassword
-_HOST_USER_SHORTNAME=testinguser
+_LOG_FILE="`basename $0 .sh`.log"
 
-_DS_USERS=`cat <<EOF
-{
- "dstudio-users-admin-status" = YES;
- "dstudio-users-name" = ${_HOST_USER_NAME};
- "dstudio-user-password" = "${_HOST_USER_PASSWORD}";
- "dstudio-user-shortname" = ${_HOST_USER_SHORTNAME};
+## ------------------------------------------------------------
+## CSV Format
+##
+## 1 = MAC
+## 2 = dstudio-users-admin-status, (YES or NO)
+## 3 = dstudio-users-name,
+## 4 = dstudio-user-password,
+## 5 = dstudio-user-shortname
+## ------------------------------------------------------------
+
+read_csv_file() {
+    awk -F, -v "_db_byhost=${_DB_BYHOST}" '{
+      gsub(/\015/, "");       # strip CR
+      gsub(/"* *, *"*/, ","); # simplify field separation
+      gsub(/^ *" */, "");     # strip leading space and quote
+      gsub(/"* *$/, "");      # strip trailing space and quote
+      printf("defaults write %s/%s \"{", _db_byhost, $1);
+      printf(" dstudio-users-admin-status = %s;", $2);
+      printf(" dstudio-users-name = %s;", $3);
+      printf(" dstudio-user-password = \"%s\";", $4);
+      printf(" dstudio-user-shortname = %s;", $5);
+      printf(" }\"\n");
+   }'
 }
-EOF`
 
-echo defaults write ${_DB_BYHOST}/${_HOST_MAC} dstudio-users "${_DS_USERS}"
+printf "\nStarting: `date`\n" | tee -a ${_LOG_FILE}
+for f in $_CSV_FILES ; do
+    if test -s $f ; then
+	printf "\n Processing $f :\n"
+	cat $f | read_csv_file | /bin/sh
+	printf " Completed processing $f\n"
+    else
+	printf " Error - input file $f either does not exist or is empty.\n"
+    fi
+done 2>&1 | tee -a ${_LOG_FILE}
+printf "\nEnding: `date`\n" | tee -a ${_LOG_FILE}
+
+printf "\nThe output of this script has been logged to ${_LOG_FILE}\n"
