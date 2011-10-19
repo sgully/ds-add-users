@@ -48,7 +48,7 @@ printf "\nStarting: `date`\n" | tee -a ${_LOG_FILE}
 for f in $_CSV_FILES ; do
     if test -s $f ; then
 	printf "\n Processing $f :\n"
-	cat $f | read_csv_file #| /bin/sh
+	cat $f | read_csv_file | /bin/sh
 	printf " Completed processing $f\n"
     else
 	printf " Error - input file $f either does not exist or is empty.\n"
