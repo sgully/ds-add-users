@@ -40,19 +40,20 @@ read_csv_file() {
 
       printf("%s dstudio-users \047({", defcom);
       printf(" dstudio-users-admin-status = %s;", $2);
-      printf(" dstudio-users-hidden-status = NO;");
+      printf(" dstudio-users-hidden-status = YES;");
       printf(" dstudio-users-name = %s;", $3);
       printf(" dstudio-user-password = \"%s\";", $4);
       printf(" dstudio-user-shortname = %s;", $5);
       printf(" })\047\n");
 
-      printf("%s dstudio-hostname  \047%s\047\n", defcom, $6);
-      printf("%s dstudio-group  \047%s\047\n", defcom, $7);
-      printf("%s architecture  \047%s\047\n", defcom, "i386");
+      printf("%s dstudio-hostname \047%s\047\n", defcom, $6);
+      printf("%s dstudio-group \047%s\047\n", defcom, $7);
+      printf("%s architecture \047%s\047\n", defcom, "i386");
       printf("%s dstudio-auto-disable  \047%s\047\n", defcom, "NO");
       printf("%s dstudio-auto-reset-workflow  \047%s\047\n", defcom, "NO");
-      printf("%s dstudio-disabled  \047%s\047\n", defcom, "NO");
-      printf("%s dstudio-mac-addr  \047%s\047\n", defcom, mac_addr);
+      printf("%s dstudio-disabled \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-mac-addr \047%s\047\n", defcom, mac_addr);
+      printf("%s dstudio-clear-text-passwords \047%s\047\n", defcom, "YES");
    }'
 }
 
