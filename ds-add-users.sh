@@ -29,18 +29,30 @@ read_csv_file() {
       gsub(/"* *, *"*/, ","); # simplify field separation
       gsub(/^ *" */, "");     # strip leading space and quote
       gsub(/"* *$/, "");      # strip trailing space and quote
-      printf("defaults write %s/%s ", _db_byhost, $1);
-      printf(" dstudio-users \047{");
+      plist = $1;
+      gsub(/:/, "", plist); # strip colons for filename
+      mac_addr = substr(plist, 1, 2);
+      for (i = 1; i<6; i++) {
+        mac_addr = sprintf("%s:%s", mac_addr, substr(plist, 1 + (i*2), 2))
+      }
+
+      defcom = sprintf("defaults write %s/%s ", _db_byhost, plist);
+
+      printf("%s dstudio-users \047({", defcom);
       printf(" dstudio-users-admin-status = %s;", $2);
       printf(" dstudio-users-hidden-status = NO;");
       printf(" dstudio-users-name = %s;", $3);
       printf(" dstudio-user-password = \"%s\";", $4);
       printf(" dstudio-user-shortname = %s;", $5);
-      printf(" }\047\n");
-      printf("defaults write %s/%s ", _db_byhost, $1);
-      printf(" dstudio-hostname  \047%s\047\n", $6);
-      printf("defaults write %s/%s ", _db_byhost, $1);
-      printf(" dstudio-group  \047%s\047\n", $7);
+      printf(" })\047\n");
+
+      printf("%s dstudio-hostname  \047%s\047\n", defcom, $6);
+      printf("%s dstudio-group  \047%s\047\n", defcom, $7);
+      printf("%s architecture  \047%s\047\n", defcom, "i386");
+      printf("%s dstudio-auto-disable  \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-auto-reset-workflow  \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-disabled  \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-mac-addr  \047%s\047\n", defcom, mac_addr);
    }'
 }
 
