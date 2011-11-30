@@ -30,6 +30,21 @@ read_csv_file() {
       gsub(/^ *" */, "");     # strip leading space and quote
       gsub(/"* *$/, "");      # strip trailing space and quote
       plist = $1;
+      admin = $2
+      username = $3;
+      password = $4;
+      shortname = $5;
+      hostname = $6;
+      group = $7;
+
+      # DEBUG
+#      admin = "YES";
+#      username = "JanaDIMITROPOULOS";
+#      password = "UXFSckx4dE9aV2s9";
+#      shortname = "s127044";
+#      hostname = "janadimitropoulos";
+#      group = "stu2014";
+
       gsub(/:/, "", plist); # strip colons for filename
       mac_addr = substr(plist, 1, 2);
       for (i = 1; i<6; i++) {
@@ -39,21 +54,59 @@ read_csv_file() {
       defcom = sprintf("defaults write %s/%s ", _db_byhost, plist);
 
       printf("%s dstudio-users \047({", defcom);
-      printf(" dstudio-users-admin-status = %s;", $2);
-      printf(" dstudio-users-hidden-status = YES;");
-      printf(" dstudio-users-name = %s;", $3);
-      printf(" dstudio-user-password = \"%s\";", $4);
-      printf(" dstudio-user-shortname = %s;", $5);
+      printf(" dstudio-user-admin-status = %s;", admin);
+      printf(" dstudio-user-hidden-status = YES;");
+      printf(" dstudio-user-name = %s;", username);
+      printf(" dstudio-user-password = \"%s\";", password);
+      printf(" dstudio-user-shortname = %s;", shortname);
       printf(" })\047\n");
 
-      printf("%s dstudio-hostname \047%s\047\n", defcom, $6);
-      printf("%s dstudio-group \047%s\047\n", defcom, $7);
+      printf("%s dstudio-hostname \047%s\047\n", defcom, hostname);
+      printf("%s dstudio-group \047%s\047\n", defcom, group);
       printf("%s architecture \047%s\047\n", defcom, "i386");
       printf("%s dstudio-auto-disable  \047%s\047\n", defcom, "NO");
       printf("%s dstudio-auto-reset-workflow  \047%s\047\n", defcom, "NO");
       printf("%s dstudio-disabled \047%s\047\n", defcom, "NO");
       printf("%s dstudio-mac-addr \047%s\047\n", defcom, mac_addr);
       printf("%s dstudio-clear-text-passwords \047%s\047\n", defcom, "YES");
+
+      # Additional fields
+
+      printf("%s architecture \047%s\047\n", defcom, "i386");
+      printf("%s dstudio-auto-disable \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-auto-reset-workflow \047%s\047\n", defcom, "NO");
+#      printf("%s dstudio-auto-started-workflow \047%s\047\n", defcom, "940CA56B-6A81-4BE7-9EA5-EE16BEA463B3");
+      printf("%s dstudio-clear-text-passwords \047%s\047\n", defcom, "YES");
+      printf("%s dstudio-disabled \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-group \047%s\047\n", defcom, "stu2014");
+      printf("%s dstudio-host-ard-ignore-empty-fields \047%s\047\n", defcom, "NO");
+      printf("%s dstudio-host-delete-other-locations \047%s\047\n", defcom, "NO");
+
+      printf("%s dstudio-host-interfaces \047%s", defcom, "{");
+      printf(" en0 = { ");
+      printf(" dstudio-dns-ips = \"%s\"; ", "");
+      printf(" dstudio-host-airport = \"%s\"; ", "NO");
+      printf(" dstudio-host-airport-name = \"%s\"; ", "");
+      printf(" dstudio-host-airport-password = \"%s\"; ", "");
+      printf(" dstudio-host-ftp-proxy = \"%s\"; ", "NO");
+      printf(" dstudio-host-ftp-proxy-port = \"%s\"; ", "");
+      printf(" dstudio-host-ftp-proxy-server = \"%s\"; ", "");
+      printf(" dstudio-host-http-proxy = \"%s\"; ", "NO");
+      printf(" dstudio-host-http-proxy-port = \"%s\";", "");
+      printf(" dstudio-host-http-proxy-server = \"%s\"; ", "");
+      printf(" dstudio-host-https-proxy = \"%s\"; ", "NO");
+      printf(" dstudio-host-https-proxy-port = \"%s\"; ", "");
+      printf(" dstudio-host-https-proxy-server = \"%s\"; ", "");
+      printf(" dstudio-host-interfaces = \"%s\"; ", "en0");
+      printf(" dstudio-host-ip = \"%s\"; ", "");
+      printf(" dstudio-router-ip = \"%s\"; ", "");
+      printf(" dstudio-search-domains = \"%s\"; ", "");
+      printf(" dstudio-subnet-mask = \"%s\"; ", "");
+      printf("};}\047\n");
+
+#    "dstudio-host-model-identifier" = "MacBook7,1";
+#    "dstudio-host-new-network-location" = NO;
+#    "dstudio-host-serial-number" = 4514405YF5W;
    }'
 }
 
